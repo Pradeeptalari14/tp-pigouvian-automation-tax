@@ -1,0 +1,47 @@
+name: DevSecOps 9+ Compliance & Security Audit
+
+on:
+  push:
+    branches: [ main ]
+  schedule:
+    - cron: '0 6 * * 1'
+
+permissions:
+  contents: read
+  id-token: write
+  security-events: write
+
+jobs:
+  sast:
+    name: Semgrep SAST & Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Run Semgrep SAST
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: >-
+            p/security-audit
+            p/secrets
+            .semgrep/rules.yml
+
+  sbom:
+    name: CycloneDX SBOM Generation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Generate CycloneDX SBOM
+        uses: CycloneDX/gh-python-generate-sbom@v2
+        with:
+          input: requirements.txt
+          output: cyclonedx-sbom.json
+
+      - name: Upload SBOM Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cyclonedx-sbom
+          path: cyclonedx-sbom.json

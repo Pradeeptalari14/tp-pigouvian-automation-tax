@@ -1,0 +1,16 @@
+rules:
+  - id: avoid-division-by-zero-in-tax
+    patterns:
+      - pattern: 1.0 / $N
+      - pattern-not-inside: |
+          if $N <= 0: ...
+    message: "Potential division by zero when calculating firm externality share without boundary check."
+    severity: ERROR
+    languages: [python]
+
+  - id: prevent-unpinned-stochastic-drift
+    patterns:
+      - pattern: random.random(...)
+    message: "Do not use unseeded stochastic methods in deterministic macroeconomic equilibrium engine."
+    severity: WARNING
+    languages: [python]
