@@ -41,7 +41,10 @@ def compute_optimal_tax(params: MacroeconomicParameters) -> float:
     have zero individual incentive to preserve macro aggregate demand.
     """
     arbitrage = max(0.0, params.human_wage_annual - params.ai_compute_cost_annual)
-    firm_externality_share = 1.0 - (1.0 / params.num_competing_firms)
+    if params.num_competing_firms <= 1:
+        firm_externality_share = 0.0
+    else:
+        firm_externality_share = 1.0 - (1.0 / params.num_competing_firms)
     optimal_tax = params.mpc * arbitrage * firm_externality_share
     return round(optimal_tax, 2)
 
@@ -51,7 +54,10 @@ def simulate_macroeconomic_equilibrium(params: MacroeconomicParameters) -> Simul
     Simulates both unregulated Nash race and Pigouvian-regulated Social Optimum.
     """
     arbitrage = max(0.0, params.human_wage_annual - params.ai_compute_cost_annual)
-    firm_externality_share = 1.0 - (1.0 / params.num_competing_firms)
+    if params.num_competing_firms <= 1:
+        firm_externality_share = 0.0
+    else:
+        firm_externality_share = 1.0 - (1.0 / params.num_competing_firms)
     optimal_tax = compute_optimal_tax(params)
     effective_ai_cost = params.ai_compute_cost_annual + optimal_tax
 
