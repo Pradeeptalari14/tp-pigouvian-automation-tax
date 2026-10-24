@@ -81,3 +81,24 @@ def test_activity_ledger_evaluation():
     assert ledger["high_displacement_count"] >= 3
     assert 0.0 < ledger["mean_displacement_risk_pct"] <= 100.0
     assert 0.0 < ledger["mean_pigouvian_tax_rate_pct"] <= 100.0
+
+
+def test_cli_text_and_json_execution(monkeypatch, capsys):
+    """Verifies CLI execution paths including text table and JSON output."""
+    import sys
+    from src.cli import main
+
+    # Test standard formatted text output with ledger
+    monkeypatch.setattr(sys, "argv", ["src.cli", "--mpc", "0.8", "--ledger"])
+    main()
+    captured = capsys.readouterr()
+    assert "PIGOUVIAN AUTOMATION TAX ENGINE" in captured.out
+    assert "Optimal Pigouvian Tax" in captured.out
+
+    # Test JSON mode output with ledger
+    monkeypatch.setattr(sys, "argv", ["src.cli", "--json", "--ledger"])
+    main()
+    captured_json = capsys.readouterr()
+    assert "optimal_pigouvian_tax" in captured_json.out
+    assert "ledger" in captured_json.out
+
