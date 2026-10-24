@@ -3,7 +3,7 @@ Task and Activity Automation Ledger
 Granular micro-economic activity breakdown across tech, engineering, and operations roles.
 """
 
-from typing import List, Dict
+from typing import List, Dict, Any
 from pydantic import BaseModel, Field
 
 

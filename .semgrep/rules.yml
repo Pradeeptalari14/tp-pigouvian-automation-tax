@@ -3,7 +3,13 @@ rules:
     patterns:
       - pattern: 1.0 / $N
       - pattern-not-inside: |
+          if $N <= 1: ...
+      - pattern-not-inside: |
           if $N <= 0: ...
+      - pattern-not-inside: |
+          if $... <= 1: ...
+      - pattern-not-inside: |
+          if $... <= 0: ...
     message: "Potential division by zero when calculating firm externality share without boundary check."
     severity: ERROR
     languages: [python]
